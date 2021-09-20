@@ -1,8 +1,13 @@
 <!doctype html>
+<meta charset="UTF-8">
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
     <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
     .node {
       fill: #4F442B;
     }
@@ -10,20 +15,24 @@
     .link {
       stroke: #93C464;
     }
-    html, body {
-      height: 100%;
+    .contain {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-
-    .full-height-width {
-      height: 100%;
-      width: 100%
+    .view {
+      height: 96vh;
+      width: 98vw;
+      border: 1px solid black
     }
     </style>
   </head>
   <body>
-    <div id="viz" class ="full-height-width">
-      <svg class="full-height-width"></svg>
-    </div>
+    <div class="contain" id="viz"></div>
+
+
     <script>
       var PromiseWrapper = d => new Promise(resolve => d3.csv(d, p => resolve(p)));
 
@@ -37,18 +46,25 @@
         });
 
         function createForceLayout(nodes,edges) {
+          var svg = d3.select("#viz")
+              .append("svg")
+                .attr("class", "view")
+                .call(d3.zoom().on("zoom", function () {
+                   svg.attr("transform", d3.event.transform)
+                }))
+              .append("g")
           //gerichtete Graphen
-          var marker = d3.select("svg").append('defs')
+          var marker = d3.select("g").append('defs')
             .append('marker')
               .attr("id", "Triangle")
-              .attr("refX", 12)
-              .attr("refY", 6)
+              .attr("refX", 9)
+              .attr("refY", 3)
               .attr("markerUnits", 'userSpaceOnUse')
               .attr("markerWidth", 12)
               .attr("markerHeight", 18)
               .attr("orient", 'auto')
             .append('path')
-              .attr("d", 'M 0 0 12 6 0 12 3 6');
+              .attr("d", 'M 0 0 6 3 0 6 0 3');
 
           var nodeHash = {};
           nodes.forEach(node => {
@@ -64,15 +80,17 @@
         var linkForce = d3.forceLink();
 
         var simulation = d3.forceSimulation()
-          .force("charge", d3.forceManyBody().strength(-40))
-          .force("center", d3.forceCenter().x(300).y(300))
+          .force("charge", d3.forceManyBody().strength(-50))
+          .force("center", d3.forceCenter(500, 500))
           .force("link", linkForce)
+          .force("x", d3.forceX())
+          .force("y", d3.forceY())
           .nodes(nodes)
           .on("tick", forceTick);
 
         simulation.force("link").links(edges);
 
-        d3.select("svg").selectAll("line.link")
+        d3.select("g").selectAll("line.link")
           .data(edges, d => `${d.source.id}-${d.target.id}`)
           .enter()
           .append("line")
@@ -81,17 +99,18 @@
             .style("fill", "#93C464")
             .style("stroke-width", 1);
 
+        //d3.select("svg").call(d3.zoom().on("zoom", function () {svg.attr("transform", d3.event.transform)}));
+
         //2. Stelle für gerichtete Graphen
         d3.selectAll("line").attr("marker-end", "url(#Triangle)");
 
-
-        var nodeEnter = d3.select("svg").selectAll("g.node")
+        var nodeEnter = d3.select("g").selectAll("g.node")
           .data(nodes, d => d.id)
           .enter()
           .append("g")
             .attr("class", "node");
         nodeEnter.append("circle")
-          .attr("r", 3)
+          .attr("r", 4)
           .style("fill", "#75739F");
         //nodeEnter.append("text")
         //  .style("text-anchor", "middle")
@@ -107,7 +126,9 @@
           d3.selectAll("g.node")
             .attr("transform", d => `translate(${d.x},${d.y})`);
         }
+
       }
+
     </script>
   </body>
 </html>
