@@ -79,7 +79,7 @@
             .attr("class", "link")
             .style("opacity", .5)
             .style("fill", "#93C464")
-            .style("stroke-width", 2);
+            .style("stroke-width", 1);
 
         //2. Stelle für gerichtete Graphen
         d3.selectAll("line").attr("marker-end", "url(#Triangle)");
@@ -91,12 +91,12 @@
           .append("g")
             .attr("class", "node");
         nodeEnter.append("circle")
-          .attr("r", 8)
+          .attr("r", 3)
           .style("fill", "#75739F");
-        nodeEnter.append("text")
-          .style("text-anchor", "middle")
-          .attr("y", 15)
-          .text(d => d.id);
+        //nodeEnter.append("text")
+        //  .style("text-anchor", "middle")
+        //  .attr("y", 15)
+        //  .text(d => d.id);
 
         function forceTick() {
           d3.selectAll("line.link")
