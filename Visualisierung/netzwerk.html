@@ -3,37 +3,61 @@
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
+    <script src="../js/cola.min.js"></script>
     <style>
     html, body {
       height: 100%;
       margin: 0;
     }
-    .node {
-      fill: #4F442B;
+    .button {
+      padding: 2px 2px;
+      text-align: center;
+      font-size: 10px;
     }
-
+    .node {
+      fill: #D55E00;
+    }
     .link {
-      stroke: #93C464;
+      stroke: #56B4E9;
+    }
+    circle.active {
+      stroke: #009E73;
+      stroke-width: 2px;
+    }
+    line.active {
+      stroke: #009E73;
+      stroke-width: 1px;
     }
     .contain {
-      height: 100vh;
-      width: 100vw;
+      height: 90vh;
+      width: 95vw;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     .view {
-      height: 96vh;
-      width: 98vw;
+      height: 85vh;
+      width: 90vw;
       border: 1px solid black
     }
     </style>
   </head>
   <body>
+    <div>
+      <input class="button" type="button" value="Stop/Start" onclick="stopgo()">
+    </div>
     <div class="contain" id="viz"></div>
 
 
     <script>
+      var height = 628,
+          width = 1256;
+
+      var cola = cola.d3adaptor(d3)
+                      .size([width, height]);
+      var simulate = true;
+
+
       var PromiseWrapper = d => new Promise(resolve => d3.csv(d, p => resolve(p)));
 
       Promise
@@ -46,22 +70,25 @@
         });
 
         function createForceLayout(nodes,edges) {
+
           var svg = d3.select("#viz")
               .append("svg")
                 .attr("class", "view")
                 .call(d3.zoom().on("zoom", function () {
                    svg.attr("transform", d3.event.transform)
                 }))
-              .append("g")
-          //gerichtete Graphen
+              .append("g");
+
+
+          //gerichtete Graphen, Pfeilspitzen
           var marker = d3.select("g").append('defs')
             .append('marker')
               .attr("id", "Triangle")
               .attr("refX", 9)
               .attr("refY", 3)
               .attr("markerUnits", 'userSpaceOnUse')
-              .attr("markerWidth", 12)
-              .attr("markerHeight", 18)
+              .attr("markerWidth", 6)
+              .attr("markerHeight", 9)
               .attr("orient", 'auto')
             .append('path')
               .attr("d", 'M 0 0 6 3 0 6 0 3');
@@ -72,32 +99,41 @@
           });
 
           edges.forEach(edge => {
-            //edge.weight = parseInt(edge.weight);
+            edge.weight = parseInt(edge.weight);
             edge.source = nodeHash[edge.source];
             edge.target = nodeHash[edge.target];
           });
 
+
+          cola
+            .nodes(nodes)
+            .links(edges)
+            .symmetricDiffLinkLengths(3)
+            .flowLayout("y", 20)
+            .avoidOverlaps(true)
+            .start(10, 20, 20);
+        /*
         var linkForce = d3.forceLink();
 
         var simulation = d3.forceSimulation()
-          .nodes(nodes)
+          .force("charge", d3.forceManyBody().strength(-50))
+          .force("center", d3.forceCenter(500, 500))
           .force("link", linkForce)
-          .force("charge", d3.forceManyBody().strength(-20))
-          //.force("center", d3.forceCenter(500, 500))
-          .force("x", d3.forceX(100))
+          .force("x", d3.forceX())
           .force("y", d3.forceY())
-          .force('collide', d3.forceCollide().radius(60).iterations(2))
+          .nodes(nodes)
           .on("tick", forceTick);
 
         simulation.force("link").links(edges);
+        */
 
-        d3.select("g").selectAll("line.link")
+        var edges = d3.select("g").selectAll("line.link")
           .data(edges, d => `${d.source.id}-${d.target.id}`)
           .enter()
           .append("line")
             .attr("class", "link")
             .style("opacity", .5)
-            .style("fill", "#93C464")
+            .style("fill", "#56B4E9")
             .style("stroke-width", 1);
 
         //d3.select("svg").call(d3.zoom().on("zoom", function () {svg.attr("transform", d3.event.transform)}));
@@ -109,15 +145,17 @@
           .data(nodes, d => d.id)
           .enter()
           .append("g")
-            .attr("class", "node");
-        nodeEnter.append("circle")
-          .attr("r", 4)
-          .style("fill", "#75739F");
+            .attr("class", "node")
+            .append("circle")
+          .attr("r", 3)
+          .style("fill", "#D55E00")
+          .call(cola.drag);
         //nodeEnter.append("text")
         //  .style("text-anchor", "middle")
         //  .attr("y", 15)
         //  .text(d => d.id);
 
+        /*
         function forceTick() {
           d3.selectAll("line.link")
             .attr("x1", d => d.source.x)
@@ -127,7 +165,39 @@
           d3.selectAll("g.node")
             .attr("transform", d => `translate(${d.x},${d.y})`);
         }
+        */
 
+        d3.selectAll('circle').on('mousover', nodeOver);
+        d3.selectAll('line').on('mouseover', edgeOver);
+
+        function nodeOver(d) {
+          // Selection of all nodes to set class of hovered over node to 'active'
+          d3.selectAll('circle').classed('active', p => p === d || p.target === d);
+        }
+
+        function edgeOver(d) {
+          d3.selectAll('line').classed('active', p => p === d);
+        }
+
+        cola.on("tick", function () {
+          if(simulate) {
+            edges.attr("x1", function (d) { return d.source.x; })
+                .attr("y1", function (d) { return d.source.y; })
+                .attr("x2", function (d) { return d.target.x; })
+                .attr("y2", function (d) { return d.target.y; });
+
+                nodeEnter.attr("cx", function (d) { return d.x; })
+                .attr("cy", function (d) { return d.y; });
+          } else {
+            cola.stop();
+          }
+        });
+      }
+
+      function stopgo () {
+        simulate ? simulate = false : simulate = true;
+        if (simulate)
+          cola.start();
       }
 
     </script>
