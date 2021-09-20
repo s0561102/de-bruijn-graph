@@ -48,8 +48,8 @@
           .enter()
           .append("line")
             .attr("class", "link")
-            .style("opacity", .5);
-            //.style("stroke-width", d => d.weight);
+            .style("opacity", .5)
+            .style("stroke-width", "2px");
 
         var nodeEnter = d3.select("svg").selectAll("g.node")
           .data(nodes, d => d.id)
