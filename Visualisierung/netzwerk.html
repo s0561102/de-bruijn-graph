@@ -10,11 +10,19 @@
     .link {
       stroke: #93C464;
     }
+    html, body {
+      height: 100%;
+    }
+
+    .full-height-width {
+      height: 100%;
+      width: 100%
+    }
     </style>
   </head>
   <body>
-    <div id="viz">
-      <svg style="width:600px;height:600px;" ></svg>
+    <div id="viz" class ="full-height-width">
+      <svg class="full-height-width"></svg>
     </div>
     <script>
       var PromiseWrapper = d => new Promise(resolve => d3.csv(d, p => resolve(p)));
@@ -29,7 +37,18 @@
         });
 
         function createForceLayout(nodes,edges) {
-
+          //gerichtete Graphen
+          var marker = d3.select("svg").append('defs')
+            .append('marker')
+              .attr("id", "Triangle")
+              .attr("refX", 12)
+              .attr("refY", 6)
+              .attr("markerUnits", 'userSpaceOnUse')
+              .attr("markerWidth", 12)
+              .attr("markerHeight", 18)
+              .attr("orient", 'auto')
+            .append('path')
+              .attr("d", 'M 0 0 12 6 0 12 3 6');
 
           var nodeHash = {};
           nodes.forEach(node => {
@@ -61,6 +80,10 @@
             .style("opacity", .5)
             .style("fill", "#93C464")
             .style("stroke-width", 2);
+
+        //2. Stelle für gerichtete Graphen
+        d3.selectAll("line").attr("marker-end", "url(#Triangle)");
+
 
         var nodeEnter = d3.select("svg").selectAll("g.node")
           .data(nodes, d => d.id)
