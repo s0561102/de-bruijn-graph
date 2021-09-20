@@ -2,7 +2,15 @@
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
-    <link rel="stylesheet" href="netzwerk.css">
+    <style>
+    .node {
+      fill: #4F442B;
+    }
+
+    .link {
+      stroke: #93C464;
+    }
+    </style>
   </head>
   <body>
     <div id="viz">
@@ -21,6 +29,8 @@
         });
 
         function createForceLayout(nodes,edges) {
+
+
           var nodeHash = {};
           nodes.forEach(node => {
             nodeHash[node.id] = node;
@@ -49,7 +59,8 @@
           .append("line")
             .attr("class", "link")
             .style("opacity", .5)
-            .style("stroke-width", "2px");
+            .style("fill", "#93C464")
+            .style("stroke-width", 2);
 
         var nodeEnter = d3.select("svg").selectAll("g.node")
           .data(nodes, d => d.id)
@@ -57,7 +68,7 @@
           .append("g")
             .attr("class", "node");
         nodeEnter.append("circle")
-          .attr("r", 5)
+          .attr("r", 8)
           .style("fill", "#75739F");
         nodeEnter.append("text")
           .style("text-anchor", "middle")
