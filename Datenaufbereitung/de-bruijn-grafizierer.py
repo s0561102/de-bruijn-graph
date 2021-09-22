@@ -22,9 +22,9 @@ def debruijnize(k_mers):
         r2 = k[1:]  # string von zweiten [1] bis zur letzen Stelle des String
         r1_hash = kmer_to_sha(r1)
         r2_hash = kmer_to_sha(r2)
-        nodes.add(r1_hash) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
-        nodes.add(r2_hash)
-        edges.append((r1_hash,r2_hash)) # Tupel aus nodes wird edges list hinzugefügt
+        nodes.add(r1) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
+        nodes.add(r2)
+        edges.append((r1,r2)) # Tupel aus nodes wird edges list hinzugefügt
     
     return (nodes,edges)
 
@@ -93,4 +93,4 @@ def print_list(items):
     
 #print(read_fasta_reads_to_kmers("virus_perfectreads.fasta", 4))    
     
-de_bruijn_graphizer("virus_errorreads.fasta", 100)
+de_bruijn_graphizer("virus_errorreads2.fasta", 100)
