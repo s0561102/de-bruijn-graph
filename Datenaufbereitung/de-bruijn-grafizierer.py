@@ -20,13 +20,17 @@ def debruijnize(k_mers):
     for k, w in k_mers.items():
         r1 = k[:-1] # string von der ersten [0] bis zur vorletzten Stelle des Strings
         r2 = k[1:]  # string von zweiten [1] bis zur letzen Stelle des String
-        r1_hash = hashlib.sha224(r1.encode('utf-8')).hexdigest()
-        r2_hash = hashlib.sha224(r2.encode('utf-8')).hexdigest()
-        nodes.add(r1) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
-        nodes.add(r2)
-        edges.append((r1,r2)) # Tupel aus nodes wird edges list hinzugefügt
+        r1_hash = kmer_to_sha(r1)
+        r2_hash = kmer_to_sha(r2)
+        nodes.add(r1_hash) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
+        nodes.add(r2_hash)
+        edges.append((r1_hash,r2_hash)) # Tupel aus nodes wird edges list hinzugefügt
     
-    return (nodes,edges) 
+    return (nodes,edges)
+
+    
+def kmer_to_sha(kmer):
+    return hashlib.sha224(kmer.encode('utf-8')).hexdigest()
 
 
 def build_k_mer(str,k):
@@ -89,4 +93,4 @@ def print_list(items):
     
 #print(read_fasta_reads_to_kmers("virus_perfectreads.fasta", 4))    
     
-de_bruijn_graphizer("virus2_perfectreads.fasta", 9)
+de_bruijn_graphizer("virus_errorreads.fasta", 100)

@@ -99,7 +99,7 @@
           });
 
           edges.forEach(edge => {
-            edge.weight = parseInt(edge.weight);
+            //edge.weight = parseInt(edge.weight);
             edge.source = nodeHash[edge.source];
             edge.target = nodeHash[edge.target];
           });
@@ -108,10 +108,10 @@
           cola
             .nodes(nodes)
             .links(edges)
-            .symmetricDiffLinkLengths(4)
-            .flowLayout("y", 30)
+            //.symmetricDiffLinkLengths(6)
+            .flowLayout("y", 20)
             .avoidOverlaps(true)
-            .start(10, 20, 20);
+            .start(30);
         /*
         var linkForce = d3.forceLink();
 
