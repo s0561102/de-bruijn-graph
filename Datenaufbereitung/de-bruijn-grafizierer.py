@@ -93,4 +93,4 @@ def print_list(items):
     
 #print(read_fasta_reads_to_kmers("virus_perfectreads.fasta", 4))    
     
-de_bruijn_graphizer("virus_errorreads2.fasta", 100)
+de_bruijn_graphizer("virus_perfectreads.fasta", 100)
