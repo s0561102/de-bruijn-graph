@@ -20,8 +20,8 @@ def debruijnize(k_mers):
     for k, w in k_mers.items():
         r1 = k[:-1] # string von der ersten [0] bis zur vorletzten Stelle des Strings
         r2 = k[1:]  # string von zweiten [1] bis zur letzen Stelle des String
-        r1_hash = kmer_to_sha(r1)
-        r2_hash = kmer_to_sha(r2)
+        #r1_hash = kmer_to_sha(r1)
+        #r2_hash = kmer_to_sha(r2)
         nodes.add(r1) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
         nodes.add(r2)
         edges.append((r1,r2)) # Tupel aus nodes wird edges list hinzugefügt
@@ -37,13 +37,12 @@ def build_k_mer(str,k):
     return [str[i:k+i] for i in range(0,len(str)-k+1)]
 
 
-# Einlesen der Reads aus fasta Datei zu k-meren
+# Einlesen der Reads aus fasta Datei zu gewichteten k-meren
 def read_fasta_reads_to_kmers(filename, k_mer_size):
     k_mers = []
     weighted = {}
     for seq_record in SeqIO.parse(filename, "fasta"):
         k_mers.extend(build_k_mer(str(seq_record.seq), k_mer_size))
-
         
     for i in k_mers:
         if i not in weighted:
@@ -78,7 +77,6 @@ def write_nodes_file(nodes):
     f = open('../Visualisierung/nodes.csv', 'w')
     w = csv.writer(f)
     w.writerow(h)
-    # cast set to list
     lis = list(nodes)
     for n in lis:
         w.writerow([n])
@@ -90,7 +88,5 @@ def print_list(items):
     for i in items:
         print(i)
         
-    
-#print(read_fasta_reads_to_kmers("virus_perfectreads.fasta", 4))    
-    
-de_bruijn_graphizer("virus_perfectreads.fasta", 100)
+        
+de_bruijn_graphizer("test.fasta", 10)

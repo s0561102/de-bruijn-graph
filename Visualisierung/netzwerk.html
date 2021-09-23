@@ -3,7 +3,8 @@
 <html>
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js" type="text/JavaScript"></script>
-    <script src="../js/WebCola-3.3.8/cola.min.js"></script>
+    <!--<script src="../js/WebCola-3.3.8/cola.min.js"></script>-->
+    <script src="http://marvl.infotech.monash.edu/webcola/cola.min.js"></script>
     <style>
     html, body {
       height: 100%;
@@ -20,7 +21,11 @@
     .link {
       stroke: #56B4E9;
     }
-    circle.active {
+    .source{
+      stroke: #009E73;
+      stroke-width: 2px;
+    }
+    .target {
       stroke: #009E73;
       stroke-width: 2px;
     }
@@ -108,10 +113,10 @@
           cola
             .nodes(nodes)
             .links(edges)
-            //.symmetricDiffLinkLengths(6)
-            .flowLayout("y", 20)
+            .symmetricDiffLinkLengths(3)
+            .flowLayout("y", 30)
             .avoidOverlaps(true)
-            .start(10);
+            .start(14);
         /*
         var linkForce = d3.forceLink();
 
@@ -167,16 +172,13 @@
         }
         */
 
-        d3.selectAll('circle').on('mousover', nodeOver);
         d3.selectAll('line').on('mouseover', edgeOver);
-
-        function nodeOver(d) {
-          // Selection of all nodes to set class of hovered over node to 'active'
-          d3.selectAll('circle').classed('active', p => p === d || p.target === d);
-        }
 
         function edgeOver(d) {
           d3.selectAll('line').classed('active', p => p === d);
+          d3.selectAll('g.node')
+            .classed('source', p => p === d.source)
+            .classed('target', p => p === d.target);
         }
 
         cola.on("tick", function () {
