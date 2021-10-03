@@ -9,22 +9,18 @@ from Bio import SeqIO
 import csv
 import hashlib
 
-# funktion nimmt k-mere an
-# gibt nodes, edges und list mit start nodes zurück
+
 def debruijnize(k_mers):
-    # erstellen eines Sets für nodes
     nodes = set()
-    # erstellen eines sets für nodes die kein Start sind?
-    # List für edges(als Tupel (x, y))
     edges = []
     for k, w in k_mers.items():
-        r1 = k[:-1] # string von der ersten [0] bis zur vorletzten Stelle des Strings
-        r2 = k[1:]  # string von zweiten [1] bis zur letzen Stelle des String
+        r1 = k[:-1]
+        r2 = k[1:]
         #r1_hash = kmer_to_sha(r1)
         #r2_hash = kmer_to_sha(r2)
-        nodes.add(r1) # die k-1-mere werden zu node set hinzugefügt wenn sie nicht schon existieren
+        nodes.add(r1)
         nodes.add(r2)
-        edges.append((r1,r2)) # Tupel aus nodes wird edges list hinzugefügt
+        edges.append((r1,r2))
     
     return (nodes,edges)
 
@@ -37,7 +33,6 @@ def build_k_mer(str,k):
     return [str[i:k+i] for i in range(0,len(str)-k+1)]
 
 
-# Einlesen der Reads aus fasta Datei zu gewichteten k-meren
 def read_fasta_reads_to_kmers(filename, k_mer_size):
     k_mers = []
     weighted = {}
@@ -57,7 +52,6 @@ def de_bruijn_graphizer(filename, k):
     G = debruijnize(k_mers)
     write_edges_file(G[1])
     write_nodes_file(G[0])
-    #print_list(G[0])
     
     
 def write_edges_file(edges):
@@ -67,8 +61,7 @@ def write_edges_file(edges):
     w.writerow(h)
     st = set(edges)
     for i in list(st):        
-        w.writerow(i)
-    
+        w.writerow(i)    
     f.close()
     
     
@@ -79,8 +72,7 @@ def write_nodes_file(nodes):
     w.writerow(h)
     lis = list(nodes)
     for n in lis:
-        w.writerow([n])
-    
+        w.writerow([n])    
     f.close()
     
     
