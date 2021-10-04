@@ -228,7 +228,15 @@ def prepare_sdbg_for_csv(sdbg):
     return edges, nodes
 
 
-kmersize=100
+kmersize=22
+
+# test.fasta
+# virus_perfectreads.fasta
+# virus_errorreads.fasta
+# virus_errorreads2.fasta
+# virus_perfectreads.fasta
+# virus2_errorreads.fasta
+# virus2_errorreads2.fasta
 
 reads = read_fasta("virus2_errorreads.fasta")
 print("Found " + str(len(reads)) + " reads.")

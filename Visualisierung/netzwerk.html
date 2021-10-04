@@ -21,7 +21,7 @@
     .link {
       stroke: #56B4E9;
     }
-    .source{
+    .source {
       stroke: #009E73;
       stroke-width: 2px;
     }
@@ -84,8 +84,6 @@
                 }))
               .append("g");
 
-
-          //gerichtete Graphen, Pfeilspitzen
           var marker = d3.select("g").append('defs')
             .append('marker')
               .attr("id", "Triangle")
@@ -97,6 +95,7 @@
               .attr("orient", 'auto')
             .append('path')
               .attr("d", 'M 0 0 6 3 0 6 0 3');
+
 
           var nodeHash = {};
           nodes.forEach(node => {
@@ -113,8 +112,8 @@
           cola
             .nodes(nodes)
             .links(edges)
-            .symmetricDiffLinkLengths(3)
-            .flowLayout("y", 30)
+            .symmetricDiffLinkLengths(6)
+            .flowLayout("x", 30)
             .avoidOverlaps(true)
             .start(14);
         /*
@@ -141,9 +140,6 @@
             .style("fill", "#56B4E9")
             .style("stroke-width", 1);
 
-        //d3.select("svg").call(d3.zoom().on("zoom", function () {svg.attr("transform", d3.event.transform)}));
-
-        //2. Stelle für gerichtete Graphen
         d3.selectAll("line").attr("marker-end", "url(#Triangle)");
 
         var nodeEnter = d3.select("g").selectAll("g.node")
@@ -155,10 +151,6 @@
             .attr("r", 3)
             .style("fill", "#D55E00")
           .call(cola.drag);
-        //nodeEnter.append("text")
-        //  .style("text-anchor", "middle")
-        //  .attr("y", 15)
-        //  .text(d => d.id);
 
         /*
         function forceTick() {

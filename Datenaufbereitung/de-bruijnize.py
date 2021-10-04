@@ -81,4 +81,11 @@ def print_list(items):
         print(i)
         
         
-de_bruijn_graphizer("test.fasta", 10)
+de_bruijn_graphizer("test.fasta", 2)
+# test.fasta
+# virus_perfectreads.fasta
+# virus_errorreads.fasta
+# virus_errorreads2.fasta
+# virus_perfectreads.fasta
+# virus2_errorreads.fasta
+# virus2_errorreads2.fasta
