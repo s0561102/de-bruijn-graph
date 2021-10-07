@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Aug 26 15:28:50 2021
-Source: https://towardsdatascience.com/genome-assembly-using-de-bruijn-graphs-69570efcc270
-@author: tm
+Some of this code derives from this jupyter notebook
+Source: https://gist.github.com/maduranga95/56c8a7c39a00746cec494b07d2886ad7
 """
 from Bio import SeqIO
 import csv
